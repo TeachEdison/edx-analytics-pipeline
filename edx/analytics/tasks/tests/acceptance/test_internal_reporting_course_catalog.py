@@ -29,13 +29,15 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
         """Tests the workflow for the internal reporting d_program_course table, end to end."""
 
         self.task.launch([
-            'LoadInternalReportingProgramCourseToWarehouse',
+            'LoadInternalReportingCourseCatalogToWarehouse',
             '--date', self.DATE
         ])
 
-        self.validate_output()
+        self.validate_program_course()
+        #self.validate_course_seat()
+        self.validate_course_run()
 
-    def validate_output(self):
+    def validate_program_course(self):
         """Validates the output, comparing it to a csv of all the expected output from this workflow."""
         with self.vertica.cursor() as cursor:
             expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_program_course.csv')
@@ -52,7 +54,44 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
                                                                    'catalog_course', 'catalog_course_title',
                                                                    'course_id', 'org_id', 'partner_short_code'])
 
-            try:  # A ValueError will be thrown if the column names don't match or the two data frames are not square.
-                self.assertTrue(all(d_program_course == expected))
-            except ValueError:
-                self.fail("Expected and returned data frames have different shapes or labels.")
+            self.assert_data_frames_equal(d_program_course, expected)
+
+    def validate_course_seat(self):
+        with self.vertica.cursor() as cursor:
+            expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_course_seat.csv')
+            expected = pandas.read_csv(expected_output_csv, parse_dates=True)
+
+            cursor.execute(
+                "SELECT course_id,course_seat_type,course_seat_price,course_seat_currency,"
+                "course_seat_upgrade_deadline,course_seat_credit_provider,course_seat_credit_hours FROM"
+                " {schema}.d_course_seat ORDER BY course_id ASC".format(
+                    schema=self.vertica.schema_name
+                )
+            )
+            response = cursor.fetchall()
+            d_course_seat = pandas.DataFrame(response, columns=['course_id', 'course_seat_type', 'course_seat_price',
+                                                                   'course_seat_currency', 'course_seat_upgrade_deadline',
+                                                                   'course_seat_credit_provider', 'course_seat_credit_hours'])
+
+            self.assert_data_frames_equal(d_course_seat, expected)
+
+    def validate_course_run(self):
+        with self.vertica.cursor() as cursor:
+            expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_course.csv')
+            expected = pandas.read_csv(expected_output_csv, parse_dates=True)
+
+            cursor.execute(
+                "SELECT course_id,catalog_course,catalog_course_title,start_time,end_time,enrollment_start_time,"
+                "enrollment_end_time,content_language,pacing_type,level_type,availability,org_id,partner_short_code,"
+                "marketing_url FROM {schema}.d_course ORDER BY course_id ASC".format(
+                    schema=self.vertica.schema_name
+                )
+            )
+            response = cursor.fetchall()
+            d_course = pandas.DataFrame(response, columns=['course_id', 'catalog_course', 'catalog_course_title',
+                                                                   'start_time', 'end_time','enrollment_start_time',
+                                                                   'enrollment_end_time', 'content_language',
+                                                                   'pacing_type', 'level_type', 'availability', 'org_id',
+                                                                   'partner_short_code', 'marketing_url'])
+
+            self.assert_data_frames_equal(d_course, expected)
