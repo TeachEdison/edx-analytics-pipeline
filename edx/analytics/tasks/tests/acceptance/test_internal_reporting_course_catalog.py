@@ -63,14 +63,14 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
 
             cursor.execute(
                 "SELECT course_id,course_seat_type,course_seat_price,course_seat_currency,"
-                "course_seat_credit_provider,course_seat_credit_hours FROM"
+                "course_seat_upgrade_deadline,course_seat_credit_provider,course_seat_credit_hours FROM"
                 " {schema}.d_course_seat ORDER BY course_id ASC".format(
                     schema=self.vertica.schema_name
                 )
             )
             response = cursor.fetchall()
             d_course_seat = pandas.DataFrame(response, columns=['course_id', 'course_seat_type', 'course_seat_price',
-                                                                   'course_seat_currency',
+                                                                   'course_seat_currency', 'course_seat_upgrade_deadline',
                                                                    'course_seat_credit_provider', 'course_seat_credit_hours'])
 
             self.assert_data_frames_equal(d_course_seat, expected)
