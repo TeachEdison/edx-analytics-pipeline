@@ -34,8 +34,8 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
         ])
 
         self.validate_program_course()
-        #self.validate_course_seat()
-        self.validate_course_run()
+        self.validate_course_seat()
+        self.validate_course()
 
     def validate_program_course(self):
         """Validates the output, comparing it to a csv of all the expected output from this workflow."""
@@ -75,7 +75,7 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
 
             self.assert_data_frames_equal(d_course_seat, expected)
 
-    def validate_course_run(self):
+    def validate_course(self):
         with self.vertica.cursor() as cursor:
             expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_course.csv')
             expected = pandas.read_csv(expected_output_csv, parse_dates=True)
