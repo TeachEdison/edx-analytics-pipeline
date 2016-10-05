@@ -73,17 +73,6 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
                                                                    'course_seat_currency', 'course_seat_upgrade_deadline',
                                                                    'course_seat_credit_provider', 'course_seat_credit_hours'])
 
-            print 'Printing diagnostic info:'
-
-            for index, row in d_course_seat.iterrows():
-                print(row['course_seat_upgrade_deadline'])
-                print(type(row['course_seat_upgrade_deadline']))
-
-            for index, row in expected.iterrows():
-                print(row['course_seat_upgrade_deadline'])
-                print(type(row['course_seat_upgrade_deadline']))
-
-
             self.assert_data_frames_equal(d_course_seat, expected)
 
     def validate_course(self):
