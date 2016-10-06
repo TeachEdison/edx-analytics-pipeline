@@ -102,7 +102,7 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
             response = cursor.fetchall()
             d_course = pandas.DataFrame(response, columns=columns)
 
-            print 'Printing diagnostic info:
+            print 'Printing diagnostic info:'
             for index, row in d_course.iterrows():
                 print(row['modified'])
                 print(type(row['modified']))
