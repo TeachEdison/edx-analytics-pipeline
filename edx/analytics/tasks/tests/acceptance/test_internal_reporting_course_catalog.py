@@ -90,7 +90,7 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
                 'course_id', 'catalog_course', 'catalog_course_title', 'start_time', 'end_time',
                 'enrollment_start_time', 'enrollment_end_time', 'content_language', 'pacing_type',
                 'level_type', 'availability', 'org_id', 'partner_short_code', 'marketing_url',
-                'min_effor', 'max_effort', 'modified',
+                'min_effort', 'max_effort', 'modified',
             ]
 
             cursor.execute(
