@@ -102,13 +102,4 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
             response = cursor.fetchall()
             d_course = pandas.DataFrame(response, columns=columns)
 
-            print 'Printing diagnostic info:'
-            for index, row in d_course.iterrows():
-                print(row['modified'])
-                print(type(row['modified']))
-
-            for index, row in expected.iterrows():
-                print(row['modified'])
-                print(type(row['modified']))
-
             self.assert_data_frames_equal(d_course, expected)
