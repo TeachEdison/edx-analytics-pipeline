@@ -60,7 +60,8 @@ class PullCourseCatalogAPIData(LoadInternalReportingCourseCatalogMixin, luigi.Ta
             for partner_short_code in self.partner_short_codes:  # pylint: disable=not-an-iterable
                 params = {
                     'limit': self.api_page_size,
-                    'partner': partner_short_code
+                    'partner': partner_short_code,
+                    'exclude_utm': 1,
                 }
                 url = url_path_join(self.api_root_url, 'course_runs') + '/'
                 for response in client.paginated_get(url, params=params):
