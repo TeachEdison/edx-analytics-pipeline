@@ -244,6 +244,9 @@ class CourseRecord(Record):
     org_id = StringField(nullable=False, length=255)
     partner_short_code = StringField(nullable=True, length=255)
     marketing_url = StringField(nullable=True, length=1024)
+    min_effort = IntegerField(nullable=True)
+    max_effort = IntegerField(nullable=True)
+    modified = DateTimeField(nullable=True)
 
 
 class ExtractCourseTask(BaseCourseMetadataTask):
@@ -265,7 +268,10 @@ class ExtractCourseTask(BaseCourseMetadataTask):
             availability=course_run.get('availability'),
             org_id=get_org_id_for_course(course_run['key']),
             partner_short_code=course_run.get('partner_short_code'),
-            marketing_url=course_run.get('marketing_url')
+            marketing_url=course_run.get('marketing_url'),
+            min_effort=course_run.get('min_effort'),
+            max_effort=course_run.get('max_effort'),
+            modified=DateTimeField().deserialize_from_string(course_run.get('modified')),
         )
         output_file.write(record.to_separated_values(sep=u'\t'))
         output_file.write('\n')
