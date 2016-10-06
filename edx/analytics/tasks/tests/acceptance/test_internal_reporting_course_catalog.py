@@ -84,7 +84,7 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
     def validate_course(self):
         with self.vertica.cursor() as cursor:
             expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_course.csv')
-            expected = pandas.read_csv(expected_output_csv, parse_dates=[3, 4, 5, 6])
+            expected = pandas.read_csv(expected_output_csv, parse_dates=[3, 4, 5, 6, 16])
 
             columns = [
                 'course_id', 'catalog_course', 'catalog_course_title', 'start_time', 'end_time',
