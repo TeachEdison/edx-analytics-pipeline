@@ -43,16 +43,20 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
             expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_program_course.csv')
             expected = pandas.read_csv(expected_output_csv, parse_dates=True)
 
+            columns = [
+                'program_id', 'program_type', 'program_title',
+                'catalog_course', 'catalog_course_title',
+                'course_id', 'org_id', 'partner_short_code'
+            ]
+
             cursor.execute(
-                "SELECT program_id,program_type,program_title,catalog_course,catalog_course_title,course_id,org_id,"
-                "partner_short_code FROM {schema}.d_program_course ORDER BY course_id ASC".format(
+                "SELECT {columns} FROM {schema}.d_program_course ORDER BY course_id ASC".format(
+                    columns=",".join(columns),
                     schema=self.vertica.schema_name
                 )
             )
             response = cursor.fetchall()
-            d_program_course = pandas.DataFrame(response, columns=['program_id', 'program_type', 'program_title',
-                                                                   'catalog_course', 'catalog_course_title',
-                                                                   'course_id', 'org_id', 'partner_short_code'])
+            d_program_course = pandas.DataFrame(response, columns=columns)
 
             self.assert_data_frames_equal(d_program_course, expected)
 
@@ -61,17 +65,19 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
             expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_course_seat.csv')
             expected = pandas.read_csv(expected_output_csv, parse_dates=[4])
 
+            columns = [
+                'course_id', 'course_seat_type', 'course_seat_price', 'course_seat_currency',
+                'course_seat_upgrade_deadline', 'course_seat_credit_provider', 'course_seat_credit_hours',
+            ]
+
             cursor.execute(
-                "SELECT course_id,course_seat_type,course_seat_price,course_seat_currency,"
-                "course_seat_upgrade_deadline,course_seat_credit_provider,course_seat_credit_hours FROM"
-                " {schema}.d_course_seat ORDER BY course_id ASC".format(
+                "SELECT {columns} FROM {schema}.d_course_seat ORDER BY course_id ASC".format(
+                    columns=",".join(columns),
                     schema=self.vertica.schema_name
                 )
             )
             response = cursor.fetchall()
-            d_course_seat = pandas.DataFrame(response, columns=['course_id', 'course_seat_type', 'course_seat_price',
-                                                                   'course_seat_currency', 'course_seat_upgrade_deadline',
-                                                                   'course_seat_credit_provider', 'course_seat_credit_hours'])
+            d_course_seat = pandas.DataFrame(response, columns=columns)
 
             self.assert_data_frames_equal(d_course_seat, expected)
 
@@ -80,18 +86,20 @@ class InternalReportingUserCourseLoadAcceptanceTest(AcceptanceTestCase):
             expected_output_csv = os.path.join(self.data_dir, 'output', 'acceptance_expected_d_course.csv')
             expected = pandas.read_csv(expected_output_csv, parse_dates=[3, 4, 5, 6])
 
+            columns = [
+                'course_id', 'catalog_course', 'catalog_course_title', 'start_time', 'end_time',
+                'enrollment_start_time', 'enrollment_end_time', 'content_language', 'pacing_type',
+                'level_type', 'availability', 'org_id', 'partner_short_code', 'marketing_url',
+                'min_effor', 'max_effort', 'modified',
+            ]
+
             cursor.execute(
-                "SELECT course_id,catalog_course,catalog_course_title,start_time,end_time,enrollment_start_time,"
-                "enrollment_end_time,content_language,pacing_type,level_type,availability,org_id,partner_short_code,"
-                "marketing_url FROM {schema}.d_course ORDER BY course_id ASC".format(
+                "SELECT {columns} FROM {schema}.d_course ORDER BY course_id ASC".format(
+                    columns=",".join(columns),
                     schema=self.vertica.schema_name
                 )
             )
             response = cursor.fetchall()
-            d_course = pandas.DataFrame(response, columns=['course_id', 'catalog_course', 'catalog_course_title',
-                                                                   'start_time', 'end_time','enrollment_start_time',
-                                                                   'enrollment_end_time', 'content_language',
-                                                                   'pacing_type', 'level_type', 'availability', 'org_id',
-                                                                   'partner_short_code', 'marketing_url'])
+            d_course = pandas.DataFrame(response, columns=columns)
 
             self.assert_data_frames_equal(d_course, expected)
